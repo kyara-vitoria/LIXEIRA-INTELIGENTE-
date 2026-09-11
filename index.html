@@ -1,1 +1,1876 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>EcoPulse | Lixeira Inteligente</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#07110a;
+    color:white;
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+}
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    width:245px;
+    background:#0b170e;
+    border-right:1px solid #203b26;
+    padding:25px 15px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    z-index:100;
+}
+
+.logo{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.logo h1{
+    color:#70d94d;
+    font-size:28px;
+}
+
+.logo span{
+    color:white;
+}
+
+.logo p{
+    color:#777;
+    font-size:9px;
+    letter-spacing:3px;
+    margin-top:5px;
+}
+
+.menu{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.menu button{
+    background:transparent;
+    border:none;
+    color:#aaa;
+    text-align:left;
+    padding:14px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:14px;
+    transition:.3s;
+}
+
+.menu button:hover,
+.menu button.active{
+    background:#17321c;
+    color:#79df56;
+}
+
+.menu button span{
+    font-size:18px;
+    margin-right:12px;
+}
+
+.sidebar-bottom{
+    position:absolute;
+    bottom:25px;
+    left:15px;
+    right:15px;
+}
+
+.points-mini{
+    background:linear-gradient(135deg,#173b1d,#102715);
+    border:1px solid #315b37;
+    border-radius:15px;
+    padding:15px;
+}
+
+.points-mini small{
+    color:#999;
+}
+
+.points-mini strong{
+    display:block;
+    font-size:25px;
+    color:#79dc55;
+    margin-top:5px;
+}
+
+/* ================= CONTEÚDO ================= */
+
+.main{
+    margin-left:245px;
+    width:calc(100% - 245px);
+    padding:30px;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.topbar h2{
+    font-size:25px;
+}
+
+.topbar p{
+    color:#777;
+    margin-top:5px;
+    font-size:13px;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+}
+
+.icon-btn{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    border:1px solid #28442d;
+    background:#0d1b10;
+    color:white;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.icon-btn:hover{
+    background:#1a3520;
+}
+
+/* ================= PÁGINAS ================= */
+
+.page{
+    display:none;
+    animation:fade .35s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ================= DASHBOARD ================= */
+
+.welcome{
+    background:
+    radial-gradient(circle at 90% 20%,#245d2c,transparent 35%),
+    linear-gradient(135deg,#102815,#0b170d);
+    border:1px solid #315e37;
+    border-radius:22px;
+    padding:35px;
+    margin-bottom:25px;
+}
+
+.welcome h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.welcome h1 span{
+    color:#75db51;
+}
+
+.welcome p{
+    color:#aaa;
+    max-width:650px;
+    line-height:1.6;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.stat{
+    background:#0d1c10;
+    border:1px solid #223d27;
+    border-radius:17px;
+    padding:20px;
+}
+
+.stat-icon{
+    font-size:25px;
+}
+
+.stat small{
+    color:#888;
+    display:block;
+    margin-top:10px;
+}
+
+.stat strong{
+    display:block;
+    font-size:26px;
+    color:#76d953;
+    margin-top:5px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:20px;
+}
+
+.card{
+    background:#0d1c10;
+    border:1px solid #223d27;
+    border-radius:20px;
+    padding:25px;
+}
+
+.card-title{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+.card-title h3{
+    font-size:18px;
+}
+
+.card-title button{
+    background:none;
+    border:none;
+    color:#70d650;
+    cursor:pointer;
+}
+
+/* ================= STATUS ================= */
+
+.status-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.status-item{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:14px;
+    background:#101f13;
+    border-radius:13px;
+}
+
+.status-icon{
+    width:43px;
+    height:43px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+}
+
+.status-info{
+    flex:1;
+}
+
+.status-info strong{
+    display:block;
+}
+
+.status-info small{
+    color:#888;
+}
+
+.status-bar{
+    width:100px;
+    height:7px;
+    background:#26342a;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.status-fill{
+    height:100%;
+    border-radius:20px;
+    background:#6ed44e;
+}
+
+.status-label{
+    font-size:11px;
+    width:50px;
+    text-align:right;
+}
+
+/* ================= ATIVIDADE ================= */
+
+.activity{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    padding:13px 0;
+    border-bottom:1px solid #1b2b1e;
+}
+
+.activity:last-child{
+    border:none;
+}
+
+.activity-icon{
+    width:40px;
+    height:40px;
+    background:#18351d;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.activity div:nth-child(2){
+    flex:1;
+}
+
+.activity small{
+    color:#777;
+}
+
+/* ================= SIMULADOR ================= */
+
+.simulator{
+    max-width:850px;
+}
+
+.simulator-box{
+    background:#0d1c10;
+    border:1px solid #294d30;
+    border-radius:25px;
+    padding:30px;
+}
+
+.camera{
+    height:220px;
+    background:#050905;
+    border:2px dashed #315f38;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    margin-bottom:25px;
+    transition:.3s;
+}
+
+.camera.scanning{
+    border-color:#74dc51;
+    box-shadow:0 0 30px rgba(92,220,73,.15);
+}
+
+.camera-icon{
+    font-size:55px;
+}
+
+.camera p{
+    color:#75d952;
+    margin-top:10px;
+}
+
+.trash-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.trash{
+    background:#101f13;
+    color:white;
+    border:1px solid #29452e;
+    padding:18px 8px;
+    border-radius:13px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.trash:hover{
+    transform:translateY(-4px);
+    border-color:#70d94d;
+    background:#17351c;
+}
+
+.trash div{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.sim-result{
+    display:none;
+    margin-top:20px;
+    background:#17351c;
+    border:1px solid #4c9146;
+    border-radius:15px;
+    padding:20px;
+    text-align:center;
+}
+
+.sim-result.show{
+    display:block;
+}
+
+.sim-result .big{
+    font-size:45px;
+}
+
+.sim-result strong{
+    display:block;
+    font-size:22px;
+    color:#7ade58;
+    margin:5px;
+}
+
+/* ================= COMPARTIMENTOS ================= */
+
+.bins-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.bin-card{
+    background:#0d1c10;
+    border:1px solid #263f2a;
+    border-radius:20px;
+    padding:22px;
+}
+
+.bin-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.bin-icon{
+    width:55px;
+    height:55px;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.bin-header div:nth-child(2){
+    flex:1;
+}
+
+.bin-header small{
+    color:#777;
+}
+
+.bin-status{
+    padding:7px 10px;
+    border-radius:20px;
+    font-size:11px;
+    background:#19391e;
+    color:#77db55;
+}
+
+.progress{
+    height:10px;
+    background:#1b291e;
+    border-radius:20px;
+    margin-top:20px;
+    overflow:hidden;
+}
+
+.progress div{
+    height:100%;
+    background:#70d54f;
+    transition:1s;
+}
+
+.bin-controls{
+    display:flex;
+    gap:8px;
+    margin-top:15px;
+}
+
+.bin-controls button{
+    flex:1;
+    border:1px solid #29462e;
+    background:#101f13;
+    color:#bbb;
+    padding:8px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.bin-controls button:hover{
+    color:#7cdd5b;
+}
+
+/* ================= DESAFIOS ================= */
+
+.challenge{
+    background:#0d1c10;
+    border:1px solid #27482d;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:15px;
+}
+
+.challenge-header{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.challenge-icon{
+    font-size:35px;
+}
+
+.challenge-header div:nth-child(2){
+    flex:1;
+}
+
+.challenge p{
+    color:#999;
+    margin:15px 0;
+}
+
+.challenge button{
+    border:none;
+    background:#6dd44c;
+    color:#07110a;
+    padding:10px 18px;
+    border-radius:20px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.challenge button.done{
+    background:#243a28;
+    color:#70d84e;
+}
+
+/* ================= HISTÓRICO ================= */
+
+.history-item{
+    display:flex;
+    align-items:center;
+    gap:15px;
+    padding:18px;
+    background:#0d1c10;
+    border:1px solid #223d27;
+    border-radius:15px;
+    margin-bottom:10px;
+}
+
+.history-icon{
+    font-size:28px;
+}
+
+.history-item div:nth-child(2){
+    flex:1;
+}
+
+.history-item small{
+    color:#777;
+}
+
+.positive{
+    color:#73dc51;
+    font-weight:bold;
+}
+
+/* ================= CONFIGURAÇÕES ================= */
+
+.setting{
+    background:#0d1c10;
+    border:1px solid #243e28;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.setting p{
+    color:#888;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.switch{
+    width:50px;
+    height:26px;
+    background:#355b3b;
+    border-radius:20px;
+    cursor:pointer;
+    position:relative;
+}
+
+.switch::after{
+    content:"";
+    position:absolute;
+    width:20px;
+    height:20px;
+    background:white;
+    border-radius:50%;
+    top:3px;
+    left:4px;
+    transition:.3s;
+}
+
+.switch.on{
+    background:#64c94a;
+}
+
+.switch.on::after{
+    left:26px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    z-index:500;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    background:#0d1c10;
+    border:1px solid #416d45;
+    border-radius:20px;
+    padding:30px;
+    max-width:450px;
+    width:100%;
+    text-align:center;
+}
+
+.modal-box h2{
+    margin-bottom:15px;
+    color:#78dc56;
+}
+
+.modal-box p{
+    color:#aaa;
+    line-height:1.6;
+}
+
+.close{
+    margin-top:20px;
+    background:#69d14a;
+    border:none;
+    padding:11px 25px;
+    border-radius:20px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* ================= RESPONSIVO ================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:75px;
+    }
+
+    .logo h1{
+        font-size:17px;
+    }
+
+    .logo p{
+        display:none;
+    }
+
+    .menu button{
+        text-align:center;
+        font-size:0;
+    }
+
+    .menu button span{
+        font-size:21px;
+        margin:0;
+    }
+
+    .sidebar-bottom{
+        display:none;
+    }
+
+    .main{
+        margin-left:75px;
+        width:calc(100% - 75px);
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .trash-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:600px){
+
+    .main{
+        padding:18px;
+    }
+
+    .topbar h2{
+        font-size:19px;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .bins-grid{
+        grid-template-columns:1fr;
+    }
+
+    .welcome{
+        padding:25px;
+    }
+
+    .welcome h1{
+        font-size:26px;
+    }
+
+    .trash-grid{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= MENU ================= -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <h1>Eco<span>Pulse</span> 🌱</h1>
+        <p>LIXEIRA INTELIGENTE</p>
+    </div>
+
+    <div class="menu">
+
+        <button class="active" onclick="openPage('inicio',this)">
+            <span>🏠</span> Início
+        </button>
+
+        <button onclick="openPage('simulador',this)">
+            <span>📷</span> Simulador
+        </button>
+
+        <button onclick="openPage('compartimentos',this)">
+            <span>🗑️</span> Compartimentos
+        </button>
+
+        <button onclick="openPage('desafios',this)">
+            <span>🏆</span> Desafios
+        </button>
+
+        <button onclick="openPage('historico',this)">
+            <span>📊</span> Histórico
+        </button>
+
+        <button onclick="openPage('config',this)">
+            <span>⚙️</span> Configurações
+        </button>
+
+    </div>
+
+    <div class="sidebar-bottom">
+
+        <div class="points-mini">
+
+            <small>⭐ Seus pontos</small>
+
+            <strong id="sidePoints">2.350</strong>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="main">
+
+    <div class="topbar">
+
+        <div>
+            <h2 id="pageTitle">Painel EcoPulse</h2>
+            <p id="pageDescription">
+                Acompanhe sua reciclagem e seu impacto.
+            </p>
+        </div>
+
+        <div class="top-actions">
+
+            <button class="icon-btn" onclick="showNotification()">
+                🔔
+            </button>
+
+            <button class="icon-btn" onclick="showInfo()">
+                ℹ️
+            </button>
+
+        </div>
+
+    </div>
+
+
+<!-- ================= INÍCIO ================= -->
+
+<section class="page active" id="inicio">
+
+    <div class="welcome">
+
+        <h1>
+            Olá! 🌱
+            <span>Vamos reciclar?</span>
+        </h1>
+
+        <p>
+            A EcoPulse transforma o descarte de resíduos em uma
+            experiência inteligente, educativa e sustentável.
+            Acompanhe seus pontos, consulte os compartimentos
+            e veja o impacto das suas ações.
+        </p>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-icon">⭐</div>
+            <small>Pontos acumulados</small>
+            <strong id="dashPoints">2.350</strong>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">♻️</div>
+            <small>Resíduos reciclados</small>
+            <strong>12,5 kg</strong>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🌎</div>
+            <small>Impacto ambiental</small>
+            <strong>Positivo</strong>
+        </div>
+
+        <div class="stat">
+            <div class="stat-icon">🏆</div>
+            <small>Desafios concluídos</small>
+            <strong id="challengeCount">3</strong>
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+        <div class="card">
+
+            <div class="card-title">
+
+                <h3>Status dos compartimentos</h3>
+
+                <button onclick="openPage('compartimentos',null)">
+                    Ver todos →
+                </button>
+
+            </div>
+
+            <div class="status-list" id="dashboardBins"></div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+
+                <h3>Atividade recente</h3>
+
+            </div>
+
+            <div id="activities">
+
+                <div class="activity">
+                    <div class="activity-icon">🥤</div>
+
+                    <div>
+                        <strong>Plástico reciclado</strong>
+                        <small>Agora</small>
+                    </div>
+
+                    <span class="positive">+10</span>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-icon">📄</div>
+
+                    <div>
+                        <strong>Papel reciclado</strong>
+                        <small>Hoje</small>
+                    </div>
+
+                    <span class="positive">+10</span>
+                </div>
+
+                <div class="activity">
+                    <div class="activity-icon">🏆</div>
+
+                    <div>
+                        <strong>Desafio concluído</strong>
+                        <small>Ontem</small>
+                    </div>
+
+                    <span class="positive">+50</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SIMULADOR ================= -->
+
+<section class="page" id="simulador">
+
+    <div class="simulator">
+
+        <div class="card" style="margin-bottom:20px;">
+
+            <h2 style="margin-bottom:10px;">
+                📷 Simulador de Inteligência Artificial
+            </h2>
+
+            <p style="color:#999;line-height:1.6;">
+                Escolha um resíduo abaixo para simular a identificação
+                feita pela câmera e pela inteligência artificial da EcoPulse.
+            </p>
+
+        </div>
+
+
+        <div class="simulator-box">
+
+            <div class="camera" id="camera">
+
+                <div class="camera-icon" id="cameraIcon">
+                    📷
+                </div>
+
+                <p id="cameraText">
+                    Aguardando resíduo...
+                </p>
+
+            </div>
+
+
+            <div class="trash-grid">
+
+                <button class="trash" onclick="scan('Papel','📄')">
+                    <div>📄</div>
+                    Papel
+                </button>
+
+                <button class="trash" onclick="scan('Plástico','🥤')">
+                    <div>🥤</div>
+                    Plástico
+                </button>
+
+                <button class="trash" onclick="scan('Vidro','🍾')">
+                    <div>🍾</div>
+                    Vidro
+                </button>
+
+                <button class="trash" onclick="scan('Metal','🥫')">
+                    <div>🥫</div>
+                    Metal
+                </button>
+
+                <button class="trash" onclick="scan('Orgânico','🍎')">
+                    <div>🍎</div>
+                    Orgânico
+                </button>
+
+            </div>
+
+
+            <div class="sim-result" id="simResult">
+
+                <div class="big" id="resultIcon">♻️</div>
+
+                <span>Material identificado</span>
+
+                <strong id="resultMaterial">
+                    Plástico
+                </strong>
+
+                <p id="resultMessage" style="color:#aaa;">
+                    Direcionando para o compartimento correto...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= COMPARTIMENTOS ================= -->
+
+<section class="page" id="compartimentos">
+
+    <div class="card" style="margin-bottom:20px;">
+
+        <h2>🗑️ Compartimentos inteligentes</h2>
+
+        <p style="color:#999;margin-top:8px;">
+            Controle e acompanhe o nível de cada compartimento da EcoPulse.
+        </p>
+
+    </div>
+
+    <div class="bins-grid" id="binsContainer"></div>
+
+</section>
+
+
+<!-- ================= DESAFIOS ================= -->
+
+<section class="page" id="desafios">
+
+    <div class="card" style="margin-bottom:20px;">
+
+        <h2>🏆 Desafios EcoPulse</h2>
+
+        <p style="color:#999;margin-top:8px;">
+            Recicle, complete desafios e acumule pontos.
+        </p>
+
+    </div>
+
+
+    <div class="challenge">
+
+        <div class="challenge-header">
+
+            <div class="challenge-icon">♻️</div>
+
+            <div>
+                <strong>Primeira reciclagem</strong>
+                <small>Faça seu primeiro descarte correto.</small>
+            </div>
+
+            <strong>+50 ⭐</strong>
+
+        </div>
+
+        <p>
+            Comece sua jornada sustentável realizando uma reciclagem.
+        </p>
+
+        <button onclick="completeChallenge(this,50)">
+            Participar
+        </button>
+
+    </div>
+
+
+    <div class="challenge">
+
+        <div class="challenge-header">
+
+            <div class="challenge-icon">🌱</div>
+
+            <div>
+                <strong>Semana sustentável</strong>
+                <small>Recicle durante 7 dias.</small>
+            </div>
+
+            <strong>+100 ⭐</strong>
+
+        </div>
+
+        <p>
+            Crie o hábito de separar corretamente seus resíduos.
+        </p>
+
+        <button onclick="completeChallenge(this,100)">
+            Participar
+        </button>
+
+    </div>
+
+
+    <div class="challenge">
+
+        <div class="challenge-header">
+
+            <div class="challenge-icon">🌎</div>
+
+            <div>
+                <strong>Herói do planeta</strong>
+                <small>Recicle 10 kg de resíduos.</small>
+            </div>
+
+            <strong>+200 ⭐</strong>
+
+        </div>
+
+        <p>
+            Ajude a diminuir a quantidade de resíduos descartados incorretamente.
+        </p>
+
+        <button onclick="completeChallenge(this,200)">
+            Participar
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= HISTÓRICO ================= -->
+
+<section class="page" id="historico">
+
+    <div class="card">
+
+        <h2 style="margin-bottom:20px;">
+            📊 Histórico de reciclagem
+        </h2>
+
+        <div class="history-item">
+
+            <div class="history-icon">🥤</div>
+
+            <div>
+                <strong>Plástico</strong>
+                <small>Hoje • 14:32</small>
+            </div>
+
+            <span class="positive">+10 pontos</span>
+
+        </div>
+
+
+        <div class="history-item">
+
+            <div class="history-icon">📄</div>
+
+            <div>
+                <strong>Papel</strong>
+                <small>Hoje • 11:20</small>
+            </div>
+
+            <span class="positive">+10 pontos</span>
+
+        </div>
+
+
+        <div class="history-item">
+
+            <div class="history-icon">🍾</div>
+
+            <div>
+                <strong>Vidro</strong>
+                <small>Ontem • 16:10</small>
+            </div>
+
+            <span class="positive">+10 pontos</span>
+
+        </div>
+
+
+        <div class="history-item">
+
+            <div class="history-icon">🏆</div>
+
+            <div>
+                <strong>Desafio concluído</strong>
+                <small>Ontem • 10:05</small>
+            </div>
+
+            <span class="positive">+50 pontos</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CONFIG ================= -->
+
+<section class="page" id="config">
+
+    <div class="card">
+
+        <h2 style="margin-bottom:20px;">
+            ⚙️ Configurações
+        </h2>
+
+
+        <div class="setting">
+
+            <div>
+                <strong>🔔 Notificações</strong>
+                <p>Receber avisos sobre os compartimentos.</p>
+            </div>
+
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+
+        </div>
+
+
+        <div class="setting">
+
+            <div>
+                <strong>⭐ Notificações de pontos</strong>
+                <p>Receber aviso quando ganhar pontos.</p>
+            </div>
+
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+
+        </div>
+
+
+        <div class="setting">
+
+            <div>
+                <strong>🌱 Dicas sustentáveis</strong>
+                <p>Receber dicas sobre reciclagem.</p>
+            </div>
+
+            <div class="switch" onclick="toggleSwitch(this)"></div>
+
+        </div>
+
+
+        <div class="setting">
+
+            <div>
+                <strong>📊 Relatórios semanais</strong>
+                <p>Mostrar resumo da sua reciclagem.</p>
+            </div>
+
+            <div class="switch on" onclick="toggleSwitch(this)"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+<!-- ================= MODAL ================= -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <h2 id="modalTitle">
+            EcoPulse
+        </h2>
+
+        <p id="modalText">
+            Informação.
+        </p>
+
+        <button class="close" onclick="closeModal()">
+            Fechar
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================= DADOS ================= */
+
+let points = 2350;
+
+let bins = [
+
+    {
+        name:"Papel",
+        icon:"📄",
+        level:25,
+        color:"#24518d"
+    },
+
+    {
+        name:"Plástico",
+        icon:"🥤",
+        level:55,
+        color:"#8b2929"
+    },
+
+    {
+        name:"Vidro",
+        icon:"🍾",
+        level:40,
+        color:"#26723b"
+    },
+
+    {
+        name:"Metal",
+        icon:"🥫",
+        level:75,
+        color:"#9b7107"
+    },
+
+    {
+        name:"Orgânico",
+        icon:"🍎",
+        level:15,
+        color:"#66401f"
+    }
+
+];
+
+
+/* ================= TROCAR PÁGINA ================= */
+
+function openPage(page,button){
+
+    document.querySelectorAll(".page").forEach(p=>{
+        p.classList.remove("active");
+    });
+
+    document.getElementById(page).classList.add("active");
+
+    document.querySelectorAll(".menu button").forEach(b=>{
+        b.classList.remove("active");
+    });
+
+    if(button){
+        button.classList.add("active");
+    }else{
+
+        document.querySelectorAll(".menu button").forEach(b=>{
+
+            if(b.getAttribute("onclick") &&
+               b.getAttribute("onclick").includes("'" + page + "'")){
+
+                b.classList.add("active");
+
+            }
+
+        });
+
+    }
+
+    const titles = {
+
+        inicio:["Painel EcoPulse","Acompanhe sua reciclagem e seu impacto."],
+
+        simulador:["Simulador de IA","Veja como a EcoPulse identifica os resíduos."],
+
+        compartimentos:["Compartimentos","Acompanhe o nível de cada compartimento."],
+
+        desafios:["Desafios","Recicle e conquiste pontos."],
+
+        historico:["Histórico","Veja suas atividades recentes."],
+
+        config:["Configurações","Personalize sua experiência."]
+
+    };
+
+    document.getElementById("pageTitle").innerText = titles[page][0];
+
+    document.getElementById("pageDescription").innerText = titles[page][1];
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* ================= ATUALIZAR PONTOS ================= */
+
+function updatePoints(){
+
+    document.getElementById("sidePoints").innerText =
+        points.toLocaleString("pt-BR");
+
+    document.getElementById("dashPoints").innerText =
+        points.toLocaleString("pt-BR");
+
+}
+
+
+/* ================= STATUS DOS COMPARTIMENTOS ================= */
+
+function getStatus(level){
+
+    if(level <= 30){
+
+        return {
+            text:"Vazio",
+            percent:level
+        };
+
+    }
+
+    if(level <= 70){
+
+        return {
+            text:"Metade",
+            percent:level
+        };
+
+    }
+
+    return {
+        text:"Cheio",
+        percent:level
+    };
+
+}
+
+
+/* ================= RENDER DASHBOARD ================= */
+
+function renderDashboard(){
+
+    const container =
+        document.getElementById("dashboardBins");
+
+    container.innerHTML="";
+
+    bins.forEach((bin,index)=>{
+
+        const status = getStatus(bin.level);
+
+        container.innerHTML += `
+
+        <div class="status-item">
+
+            <div class="status-icon"
+                 style="background:${bin.color}">
+                ${bin.icon}
+            </div>
+
+            <div class="status-info">
+
+                <strong>${bin.name}</strong>
+
+                <small>
+                    Compartimento ${index+1}
+                </small>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div class="status-fill"
+                     style="width:${status.percent}%">
+                </div>
+
+            </div>
+
+            <div class="status-label">
+                ${status.text}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ================= RENDER BINS ================= */
+
+function renderBins(){
+
+    const container =
+        document.getElementById("binsContainer");
+
+    container.innerHTML="";
+
+    bins.forEach((bin,index)=>{
+
+        const status = getStatus(bin.level);
+
+        container.innerHTML += `
+
+        <div class="bin-card">
+
+            <div class="bin-header">
+
+                <div class="bin-icon"
+                     style="background:${bin.color}">
+                    ${bin.icon}
+                </div>
+
+                <div>
+                    <strong>${bin.name}</strong>
+
+                    <small>
+                        Compartimento ${index+1}
+                    </small>
+                </div>
+
+                <span class="bin-status">
+                    ${status.text}
+                </span>
+
+            </div>
+
+
+            <div class="progress">
+
+                <div style="width:${bin.level}%"></div>
+
+            </div>
+
+
+            <p style="color:#777;font-size:12px;margin-top:8px;">
+                Capacidade utilizada: ${bin.level}%
+            </p>
+
+
+            <div class="bin-controls">
+
+                <button onclick="changeBin(${index},-10)">
+                    − Diminuir
+                </button>
+
+                <button onclick="changeBin(${index},10)">
+                    + Aumentar
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ================= ALTERAR COMPARTIMENTO ================= */
+
+function changeBin(index,value){
+
+    bins[index].level += value;
+
+    if(bins[index].level < 0)
+        bins[index].level = 0;
+
+    if(bins[index].level > 100)
+        bins[index].level = 100;
+
+    renderBins();
+
+    renderDashboard();
+
+}
+
+
+/* ================= SIMULADOR ================= */
+
+function scan(material,icon){
+
+    const camera =
+        document.getElementById("camera");
+
+    const cameraText =
+        document.getElementById("cameraText");
+
+    const cameraIcon =
+        document.getElementById("cameraIcon");
+
+    const result =
+        document.getElementById("simResult");
+
+    camera.classList.add("scanning");
+
+    cameraIcon.innerText="🔎";
+
+    cameraText.innerText=
+        "Analisando material...";
+
+    result.classList.remove("show");
+
+
+    setTimeout(()=>{
+
+        cameraIcon.innerText=icon;
+
+        cameraText.innerText=
+            "Material identificado!";
+
+        document.getElementById("resultIcon").innerText=icon;
+
+        document.getElementById("resultMaterial").innerText=material;
+
+        document.getElementById("resultMessage").innerText=
+            "A IA direcionaria o resíduo para o compartimento de " +
+            material + ".";
+
+        result.classList.add("show");
+
+        camera.classList.remove("scanning");
+
+        points += 10;
+
+        updatePoints();
+
+        addActivity(material,icon);
+
+        increaseBin(material);
+
+    },1000);
+
+}
+
+
+/* ================= AUMENTAR BIN AUTOMATICAMENTE ================= */
+
+function increaseBin(material){
+
+    const index =
+        bins.findIndex(b=>b.name === material);
+
+    if(index !== -1){
+
+        bins[index].level += 5;
+
+        if(bins[index].level > 100)
+            bins[index].level = 100;
+
+        renderBins();
+        renderDashboard();
+
+    }
+
+}
+
+
+/* ================= ATIVIDADE ================= */
+
+function addActivity(material,icon){
+
+    const activities =
+        document.getElementById("activities");
+
+    const activity =
+        document.createElement("div");
+
+    activity.className="activity";
+
+    activity.innerHTML=`
+
+        <div class="activity-icon">
+            ${icon}
+        </div>
+
+        <div>
+            <strong>${material} reciclado</strong>
+            <small>Agora</small>
+        </div>
+
+        <span class="positive">
+            +10
+        </span>
+
+    `;
+
+    activities.prepend(activity);
+
+}
+
+
+/* ================= DESAFIOS ================= */
+
+function completeChallenge(button,reward){
+
+    if(button.classList.contains("done"))
+        return;
+
+    button.classList.add("done");
+
+    button.innerText="✓ Concluído";
+
+    points += reward;
+
+    updatePoints();
+
+    let count =
+        Number(document.getElementById("challengeCount").innerText);
+
+    count++;
+
+    document.getElementById("challengeCount").innerText=count;
+
+    showModal(
+        "🏆 Desafio concluído!",
+        "Parabéns! Você ganhou +" +
+        reward +
+        " pontos."
+    );
+
+}
+
+
+/* ================= CONFIGURAÇÕES ================= */
+
+function toggleSwitch(element){
+
+    element.classList.toggle("on");
+
+}
+
+
+/* ================= NOTIFICAÇÃO ================= */
+
+function showNotification(){
+
+    showModal(
+        "🔔 Notificações",
+        "Tudo certo! Nenhum compartimento está em situação crítica no momento."
+    );
+
+}
+
+
+/* ================= INFORMAÇÕES ================= */
+
+function showInfo(){
+
+    showModal(
+        "🌱 Sobre a EcoPulse",
+        "A EcoPulse é um projeto de lixeira inteligente que utiliza câmera, inteligência artificial, compartimentos internos e um aplicativo para incentivar a separação correta dos resíduos."
+    );
+
+}
+
+
+/* ================= MODAL ================= */
+
+function showModal(title,text){
+
+    document.getElementById("modalTitle").innerText=title;
+
+    document.getElementById("modalText").innerText=text;
+
+    document.getElementById("modal").classList.add("show");
+
+}
+
+function closeModal(){
+
+    document.getElementById("modal").classList.remove("show");
+
+}
+
+
+/* ================= INICIALIZAÇÃO ================= */
+
+renderBins();
+
+renderDashboard();
+
+updatePoints();
+
+
+/* ================= FECHAR MODAL CLICANDO FORA ================= */
+
+document.getElementById("modal").addEventListener("click",function(event){
+
+    if(event.target === this){
+
+        closeModal();
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
